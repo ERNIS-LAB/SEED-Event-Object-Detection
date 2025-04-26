@@ -1,0 +1,10 @@
+matplotlib==3.10.1
+numpy==2.2.5
+opencv_python==4.9.0.80
+pandas==2.2.3
+pycocotools==2.0.7
+sk_video==1.1.10
+torch==2.3.0
+torchsummary==1.5.1
+torchvision==0.18.0
+tqdm==4.66.4
