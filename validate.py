@@ -16,9 +16,13 @@ from utils.dataloader import seq_dataloader
 dataset_path = '/media/shenqi/data/Gen4_multi_timesurface_FromDat'
 dataset_type = 'gen4'
 dataloader = seq_dataloader(dataset_path = dataset_path, dataset_type = dataset_type, num_tbins = 8, batch_size = 4, channels = 6)
+saved_model_path = './Saved_Model/gen4/SEED_Event_GRU/'
 
 cout = 256
 threshold_group = 1
+
+validate_epoch_start = 0
+validate_epoch_end = 35
 ##########################################################################################
 net = SEED_EventGRU(dataloader.channels, base=16, cout=cout, dataset = dataset_type, pruning = False)
 box_coder = Anchors(num_levels=net.levels, anchor_list='PSEE_ANCHORS', variances=[0.1, 0.2])
@@ -26,8 +30,6 @@ ssd_head = BoxHead(net.cout, box_coder.num_anchors, len(dataloader.wanted_keys)+
 net.eval().to('cuda')
 ssd_head.eval().to('cuda')
 
-validate_epoch_start = 0
-validate_epoch_end = 35
 
 for epoch in range(validate_epoch_start, validate_epoch_end+1):
     output_val_list = []
@@ -38,8 +40,8 @@ for epoch in range(validate_epoch_start, validate_epoch_end+1):
     box_hid_mean_ave = [0] * net.levels
     cls_hid_mean_ave = [0] * net.levels
 
-    net.load_state_dict(torch.load('./Saved_Model/gen4/SEED_Event_GRU/' + str(epoch)+ '_model.pth',map_location=torch.device('cuda')))
-    ssd_head.load_state_dict(torch.load('./Saved_Model/gen4/SEED_Event_GRU/' + str(epoch)+ '_pd.pth',map_location=torch.device('cuda')))
+    net.load_state_dict(torch.load(saved_model_path + str(epoch)+ '_model.pth',map_location=torch.device('cuda')))
+    ssd_head.load_state_dict(torch.load(saved_model_path + str(epoch)+ '_pd.pth',map_location=torch.device('cuda')))
     
     first_batch = next(iter(dataloader.seq_dataloader_val))
     net.reset(torch.zeros_like(first_batch['mask_keep_memory']).to(device='cuda'))

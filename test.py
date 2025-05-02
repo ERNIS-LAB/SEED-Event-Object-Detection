@@ -17,6 +17,8 @@ import utils.data_augmentation as data_aug
 dataset_path = '/media/shenqi/data/Gen4_multi_timesurface_FromDat'
 dataset_type = 'gen4'
 dataloader = seq_dataloader(dataset_path = dataset_path, dataset_type = dataset_type, num_tbins = 12, batch_size = 5, channels = 6)
+saved_model_path = './Saved_Model/gen4/SEED_Event_GRU/'
+test_epoch = 27
 
 cout = 256
 threshold_group = 1
@@ -26,15 +28,13 @@ box_coder = Anchors(num_levels=net.levels, anchor_list='PSEE_ANCHORS', variances
 ssd_head = BoxHead(net.cout, box_coder.num_anchors, len(dataloader.wanted_keys)+1, n_layers=0)
 
 
-net.load_state_dict(torch.load('./Saved_Model/gen4/SEED_Event_GRU/27_model.pth',map_location=torch.device('cuda')))
-ssd_head.load_state_dict(torch.load('./Saved_Model/gen4/SEED_Event_GRU/27_model.pth',map_location=torch.device('cuda')))
-# net.load_state_dict(torch.load('/home/shenqi/Master_thesis/SEED/Saved_Model/new_gen4/EMinGRU_ReLUFuseDownsampleConv_ConditionalConv_256_norelu_n15b8/48_model.pth',map_location=torch.device('cuda')))
-# ssd_head.load_state_dict(torch.load('/home/shenqi/Master_thesis/SEED/Saved_Model/new_gen4/EMinGRU_ReLUFuseDownsampleConv_ConditionalConv_256_norelu_n15b8/48_pd.pth',map_location=torch.device('cuda')))
+net.load_state_dict(torch.load(saved_model_path + str(test_epoch)+ '_model.pth', map_location=torch.device('cuda')))
+ssd_head.load_state_dict(torch.load(saved_model_path + str(test_epoch)+ '_pd.pth',map_location=torch.device('cuda')))
 
 net.eval().to('cuda')
 ssd_head.eval().to('cuda')
 
-augment = data_aug.data_augmentation(dataset_type= dataset_type)
+# augment = data_aug.data_augmentation(dataset_type= dataset_type)
 
 output_val_list = []
 cnt_val = 0
@@ -52,8 +52,8 @@ with tqdm(total=len(dataloader.seq_dataloader_test), desc=f'Validation',ncols=12
             cnt_val += 1
             data['inputs'] = data['inputs'].to(device='cuda')
             
-            if data['frame_is_labeled'].sum().item() != 0:
-                data = augment(data, only_vertical_move=True)  
+            # if data['frame_is_labeled'].sum().item() != 0:
+            #     data = augment(data, only_vertical_move=True)  
                 
             output_val,mean_activity, mean_activity_conv1, output_gates_val, mean_activity_egru_relu, box_hid_mean, cls_hid_mean = inference_step(data,net,ssd_head,box_coder)
             
