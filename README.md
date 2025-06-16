@@ -1,5 +1,19 @@
 # SEED: Sparse Convolutional Recurrent Learning for Efficient Event-based Neuromorphic Object Detection
 
+## Citation 
+This is the official implementation for SEED. Please refer to and cite the following paper:
+
+```bibtex
+@inproceedings{seed2025,
+  title={Sparse Convolutional Recurrent Learning for Efficient Event-based Neuromorphic Object Detection},
+  author = {Wang, Shenqi and Xu, Yingfu and Yousefzadeh, Amirreza and Eissa, Sherif and Corporaal, Henk and Corradi, Federico and Tang, Guangzhi},
+  booktitle={2025 International Joint Conference on Neural Networks (IJCNN)},
+  pages={1--8},
+  year={2025},
+  organization={IEEE}
+}
+```
+
 ## Dependencies
 ### Prophesee Metavision SDK
 
