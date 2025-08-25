@@ -2,7 +2,7 @@
 # *.pth  
 neurobench/
 *.mp4
-*.npy
+# *.npy
 *result.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
